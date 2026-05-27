@@ -1,0 +1,13 @@
+.site-footer {
+  margin-top: 2.5rem;
+  padding: 1.75rem 1.5rem 2.5rem;
+  border-top: 1px solid var(--page-border);
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--footer-muted);
+}

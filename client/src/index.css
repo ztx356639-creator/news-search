@@ -1,0 +1,67 @@
+:root {
+  --page-max-width: 1440px;
+  --text: #64748b;
+  --text-h: #0f172a;
+  --subtitle: #475569;
+  --bg: #f1f5f9;
+  --page-border: #e2e8f0;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.04);
+  --card-shadow-hover: 0 4px 16px rgba(15, 23, 42, 0.08), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --item-divider: #f1f5f9;
+  --item-hover-bg: #f8fafc;
+  --rank-muted: #94a3b8;
+  --heat-muted: #94a3b8;
+  --footer-bg: #f8fafc;
+  --footer-text: #64748b;
+  --footer-label: #94a3b8;
+  --footer-muted: #94a3b8;
+
+  font-family: system-ui, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #94a3b8;
+    --text-h: #f1f5f9;
+    --subtitle: #cbd5e1;
+    --bg: #0f172a;
+    --page-border: #1e293b;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+    --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.2);
+    --item-divider: #334155;
+    --item-hover-bg: #273549;
+    --rank-muted: #64748b;
+    --heat-muted: #64748b;
+    --footer-bg: #172033;
+    --footer-text: #94a3b8;
+    --footer-label: #64748b;
+    --footer-muted: #64748b;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+}
