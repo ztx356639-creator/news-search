@@ -1,9 +1,36 @@
+import { useEffect, useState } from 'react'
 import { HotCard } from './components/HotCard'
 import { SiteFooter } from './components/SiteFooter'
-import { mockHotTopics } from './data/mockHotTopics'
+import { mockPlatforms } from './mock/hot'
 import './App.css'
 
 function App() {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="page">
+        <header className="page-header">
+          <h1 className="page-header__title">今日热搜</h1>
+        </header>
+
+        <main className="hot-grid">
+          <HotCard loading />
+          <HotCard loading />
+          <HotCard loading />
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="page">
       <header className="page-header">
@@ -14,8 +41,11 @@ function App() {
       </header>
 
       <main className="hot-grid">
-        {mockHotTopics.map((platform) => (
-          <HotCard key={platform.id} platform={platform} />
+        {mockPlatforms.map((platform) => (
+          <HotCard
+            key={platform.id}
+            platform={platform}
+          />
         ))}
       </main>
 

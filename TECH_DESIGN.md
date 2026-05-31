@@ -158,6 +158,25 @@ type HotPlatform = {
 
 ---
 
+### 单平台响应示例
+
+```json
+{
+  "id": "zhihu",
+  "name": "知乎",
+  "status": "ok",
+  "updatedAt": "2026-05-30T10:00:00Z",
+  "items": [
+    {
+      "rank": 1,
+      "title": "如何看待 AI 编程工具的发展？",
+      "heat": "842万热度",
+      "url": "https://www.zhihu.com/question/xxxxx"
+    }
+  ]
+}
+```
+
 # 五、API设计
 
 ## GET /api/hot
@@ -166,8 +185,9 @@ type HotPlatform = {
 
 ```json
 {
-  "updatedAt":"2026-05-28",
-  "platforms":[]
+  "success": true,
+  "updatedAt": "",
+  "platforms": []
 }
 ```
 
@@ -297,7 +317,21 @@ VITE_API_BASE_URL=
 
 ---
 
-# 八、错误处理
+# 八、环境变量
+
+开发与生产环境统一通过环境变量配置。
+
+## 后端
+
+```env
+PORT=3001
+
+CACHE_TTL=600
+
+CLIENT_ORIGIN=http://localhost:5173
+```
+
+# 九、错误处理
 
 平台失败：
 
@@ -323,7 +357,7 @@ HTTP 503
 
 ---
 
-# 九、部署架构
+# 十、部署架构
 
 浏览器
 
@@ -345,7 +379,7 @@ Express API
 
 ---
 
-# 十、开发顺序
+# 十一、开发顺序
 
 Phase0
 
@@ -387,7 +421,7 @@ QC
 
 ---
 
-# 十一、当前状态
+# 十二、当前状态
 
 已完成：
 

@@ -11,6 +11,7 @@
 
 .hot-card:hover {
   box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
 }
 
 .hot-card__header {
@@ -67,11 +68,19 @@
 }
 
 .hot-card__item--top {
-  background: color-mix(in srgb, var(--card-accent) 5%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--card-accent) 5%,
+    transparent
+  );
 }
 
 .hot-card__item--top:hover {
-  background: color-mix(in srgb, var(--card-accent) 9%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--card-accent) 9%,
+    transparent
+  );
 }
 
 .hot-card__rank {
@@ -104,6 +113,7 @@
   color: var(--text-h);
   text-decoration: none;
   transition: color 0.2s ease;
+
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -112,6 +122,10 @@
 
 .hot-card__link:hover {
   color: var(--card-accent);
+}
+
+.hot-card__link:active {
+  opacity: 0.75;
 }
 
 .hot-card__heat {
@@ -138,4 +152,53 @@
   font-variant-numeric: tabular-nums;
   color: var(--text-h);
   font-weight: 500;
+}
+
+/* Loading */
+
+.hot-card__loading {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #888;
+}
+
+/* Error */
+
+.hot-card__error {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #e5484d;
+}
+
+.hot-card__error p {
+  margin: 0 0 1rem;
+}
+
+/* Retry Button */
+
+.hot-card__retry {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5484d;
+  border-radius: 6px;
+  background: transparent;
+  color: #e5484d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hot-card__retry:hover {
+  background: #e5484d;
+  color: #fff;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .hot-card__item {
+    padding: 0.55rem 1rem;
+  }
+
+  .hot-card__title {
+    font-size: 1rem;
+  }
 }
