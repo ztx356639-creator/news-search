@@ -1,7 +1,7 @@
 import { apiUrl } from '../config/env'
-import type { HotApiResponse, PlatformHotList } from '../types/hot'
+import type { HotApiResponse } from '../types/hot'
 
-export async function fetchHotPlatforms(): Promise<PlatformHotList[]> {
+export async function fetchHotData(): Promise<HotApiResponse> {
   const response = await fetch(apiUrl('/api/hot'))
 
   if (!response.ok) {
@@ -14,5 +14,5 @@ export async function fetchHotPlatforms(): Promise<PlatformHotList[]> {
     throw new Error('获取热榜失败')
   }
 
-  return data.platforms
+  return data
 }

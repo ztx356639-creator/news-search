@@ -1,128 +1,129 @@
-import type { CSSProperties } from 'react'
 import type { PlatformHotList } from '../types/hot'
-import './HotCard.css'
 
-interface HotCardProps {
+type HotCardProps = {
   platform?: PlatformHotList
   loading?: boolean
   error?: boolean
   message?: string
+  updatedAt?: string
   onRetry?: () => void
+}
+
+function formatHot(value: string | number) {
+  if (typeof value === 'number') {
+    if (value >= 10000) {
+      return `${(value / 10000).toFixed(1)}万`
+    }
+
+    return String(value)
+  }
+
+  return value || '暂无热度'
+}
+
+function getPlatformIcon(id?: string) {
+  if (id === 'weibo') return '🔥'
+  if (id === 'zhihu') return '💡'
+  if (id === 'bilibili') return '📺'
+  return '📌'
 }
 
 export function HotCard({
   platform,
   loading = false,
   error = false,
-  message = '获取数据失败',
-  onRetry
+  message = '',
+  onRetry,
 }: HotCardProps) {
   if (loading) {
     return (
-      <article className="hot-card">
-        <div className="hot-card__loading">
-          加载中...
+      <section className="hot-card">
+        <div className="hot-card__header">
+          <div className="skeleton skeleton-title" />
         </div>
-      </article>
+
+        <div className="hot-card__body">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div
+              className="hot-item hot-item--loading"
+              key={index}
+            >
+              <div className="skeleton skeleton-rank" />
+              <div className="skeleton skeleton-line" />
+            </div>
+          ))}
+        </div>
+      </section>
     )
   }
 
   if (error) {
     return (
-      <article className="hot-card">
-        <div className="hot-card__error">
-          <p>{message}</p>
-
+      <section className="hot-card hot-card--error">
+        <div className="hot-card__empty">
+          <p>{message || '加载失败'}</p>
           {onRetry && (
             <button
+              className="retry-button"
               type="button"
-              className="hot-card__retry"
               onClick={onRetry}
             >
-              重试
+              重新加载
             </button>
           )}
         </div>
-      </article>
+      </section>
     )
   }
 
   if (!platform) {
-    return (
-      <article className="hot-card">
-        <div className="hot-card__error">
-          <p>暂无平台数据</p>
-        </div>
-      </article>
-    )
+    return null
   }
 
+  const hasItems = platform.items.length > 0
+
   return (
-    <article
-      className="hot-card"
-      style={{ '--card-accent': platform.accent } as CSSProperties}
-    >
-      <header className="hot-card__header">
+    <section className="hot-card">
+      <div className="hot-card__header">
         <h2 className="hot-card__title">
+          <span>{getPlatformIcon(platform.id)}</span>
           {platform.name}
         </h2>
-      </header>
+      </div>
 
-      <ul className="hot-card__list">
-        {platform.items.length > 0 ? (
+      <div className="hot-card__body">
+        {!hasItems ? (
+          <div className="hot-card__empty">
+            <p>
+              {platform.id === 'zhihu'
+                ? '知乎接口暂不可用，后续可接入备用数据源'
+                : '暂无数据'}
+            </p>
+          </div>
+        ) : (
           platform.items.map((item) => (
-            <li
-              key={item.rank}
-              className={`hot-card__item${
-                item.rank <= 3 ? ' hot-card__item--top' : ''
-              }`}
+            <a
+              className="hot-item"
+              href={item.url}
+              target="_blank"
+              rel="noreferrer"
+              key={`${platform.id}-${item.rank}-${item.title}`}
+              title={item.title}
             >
-              <span
-                className={`hot-card__rank${
-                  item.rank <= 3 ? ' hot-card__rank--top' : ''
-                }`}
-                aria-hidden
-              >
-                {item.rank}
+              <span className="hot-item__rank">{item.rank}</span>
+
+              <span className="hot-item__main">
+                <span className="hot-item__title">{item.title}</span>
+                <span className="hot-item__meta">
+                  热度：{formatHot(item.hot)}
+                </span>
               </span>
 
-              <div className="hot-card__body">
-                <a
-                  className="hot-card__link"
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item.title}
-                </a>
-
-                {item.heat && (
-                  <span className="hot-card__heat">
-                    {item.heat}
-                  </span>
-                )}
-              </div>
-            </li>
+              <span className="hot-item__arrow">↗</span>
+            </a>
           ))
-        ) : (
-          <li className="hot-card__item">
-            <div className="hot-card__body">
-              暂无数据
-            </div>
-          </li>
         )}
-      </ul>
-
-      <footer className="hot-card__footer">
-        <span className="hot-card__footer-label">
-          更新时间：
-        </span>
-
-        <time dateTime={platform.updatedAt}>
-          {platform.updatedAt}
-        </time>
-      </footer>
-    </article>
+      </div>
+    </section>
   )
 }
-
