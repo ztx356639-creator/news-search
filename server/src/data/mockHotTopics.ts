@@ -1,16 +1,16 @@
-const UPDATED_AT = '2026-05-26'
+const UPDATED_AT = '2026-06-02'
 
 type HotItem = {
   rank: number
   title: string
   heat: string
   url: string
-  updatedAt: string
 }
 
 type PlatformPayload = {
   id: string
   name: string
+  accent: string
   status: 'ok'
   updatedAt: string
   items: HotItem[]
@@ -22,17 +22,18 @@ function buildItems(titles: string[], heats: string[]): HotItem[] {
     title,
     heat: heats[i] ?? `${(10 - i) * 1.2}万`,
     url: '#',
-    updatedAt: UPDATED_AT,
   }))
 }
 
 export function buildHotResponse() {
   return {
+    success: true as const,
     updatedAt: `${UPDATED_AT}T00:00:00Z`,
     platforms: [
       {
         id: 'xiaohongshu',
-        name: '小红书热榜',
+        name: '小红书',
+        accent: '#ff2442',
         status: 'ok',
         updatedAt: UPDATED_AT,
         items: buildItems(
@@ -64,7 +65,8 @@ export function buildHotResponse() {
       },
       {
         id: 'bilibili',
-        name: 'B站热搜',
+        name: 'B站',
+        accent: '#00aeec',
         status: 'ok',
         updatedAt: UPDATED_AT,
         items: buildItems(
@@ -96,7 +98,8 @@ export function buildHotResponse() {
       },
       {
         id: 'zhihu',
-        name: '知乎热榜',
+        name: '知乎',
+        accent: '#1677ff',
         status: 'ok',
         updatedAt: UPDATED_AT,
         items: buildItems(
