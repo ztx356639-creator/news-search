@@ -1,5 +1,5 @@
 import express from 'express'
-import { getWeiboHotList } from '../services/weiboService'
+import { getWeiboHotList } from '../services/weiboService.js'
 
 const router = express.Router()
 
