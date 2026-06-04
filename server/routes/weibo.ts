@@ -1,11 +1,11 @@
 import express from 'express'
-import { getWeiboHotList } from '../services/weiboService.js'
+import { getWeiboHotSearch } from '../services/weiboService.js'
 
 const router = express.Router()
 
 router.get('/', async (_req, res) => {
   try {
-    const data = await getWeiboHotList()
+    const data = await getWeiboHotSearch()
 
     res.json({
       code: 0,
