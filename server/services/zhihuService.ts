@@ -1,17 +1,24 @@
 import NodeCache from 'node-cache'
 
+interface HotItem {
+  rank: number
+  title: string
+  hot: string | number
+  url: string
+}
+
 const cache = new NodeCache({
   stdTTL: 300,
 })
 
-export async function getZhihuHotSearch() {
-  const cached = cache.get('zhihu-hot')
+export async function getZhihuHotSearch(): Promise<HotItem[]> {
+  const cached = cache.get<HotItem[]>('zhihu-hot')
 
   if (cached) {
     return cached
   }
 
-  const result = [
+  const result: HotItem[] = [
     {
       rank: 1,
       title: '知乎热榜接口维护中',
