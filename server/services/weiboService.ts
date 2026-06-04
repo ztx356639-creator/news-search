@@ -1,12 +1,19 @@
 import axios from 'axios'
 import NodeCache from 'node-cache'
 
+interface HotItem {
+  rank: number
+  title: string
+  hot: string | number
+  url: string
+}
+
 const cache = new NodeCache({
   stdTTL: 300,
 })
 
-export async function getWeiboHotSearch() {
-  const cached = cache.get('weibo-hot')
+export async function getWeiboHotSearch(): Promise<HotItem[]> {
+  const cached = cache.get<HotItem[]>('weibo-hot')
 
   if (cached) {
     return cached
