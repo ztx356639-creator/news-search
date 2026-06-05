@@ -139,7 +139,7 @@ export function HotCard({
               <span className="hot-item__main">
                 <div className="hot-item__title">{item.title}</div>
                 <span className="hot-item__meta">
-                  热度：{formatHot(item.hot)}
+                  热度：{formatHot((item as any).hot)}
                 </span>
               </span>
 
