@@ -1,22 +1,18 @@
-export interface HotItem {
+export type HotItem = {
   rank: number
   title: string
-  heat?: string
+  hot: string | number
   url: string
 }
 
-export type PlatformStatus = 'ok' | 'error' | 'stale'
-
-export interface PlatformHotList {
+export type PlatformHotList = {
   id: string
   name: string
-  accent: string
-  status?: PlatformStatus
-  updatedAt: string
   items: HotItem[]
+  error?: string
 }
 
-export interface HotApiResponse {
+export type HotApiResponse = {
   success: boolean
   updatedAt: string
   platforms: PlatformHotList[]
