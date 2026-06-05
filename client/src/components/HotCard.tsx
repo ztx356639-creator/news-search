@@ -10,6 +10,13 @@ type HotCardProps = {
   onRetry?: () => void
 }
 
+type DisplayHotItem = {
+  rank: number
+  title: string
+  hot: string | number
+  url: string
+}
+
 function formatHot(value: string | number) {
   if (typeof value === 'number') {
     return value >= 10000 ? `${(value / 10000).toFixed(1)}万` : `${value}`
@@ -94,7 +101,8 @@ export function HotCard({
     return null
   }
 
-  const hasItems = platform.items.length > 0
+  const items = platform.items as DisplayHotItem[]
+  const hasItems = items.length > 0
 
   return (
     <section className="hot-card">
@@ -104,9 +112,7 @@ export function HotCard({
           <span>{platform.name}</span>
         </div>
 
-        <span className="hot-card__count">
-          {platform.items.length} 条
-        </span>
+        <span className="hot-card__count">{items.length} 条</span>
       </div>
 
       <div className="hot-card__body">
@@ -119,7 +125,7 @@ export function HotCard({
             </p>
           </div>
         ) : (
-          platform.items.map((item, index) => (
+          items.map((item, index) => (
             <a
               className="hot-item"
               href={item.url}
