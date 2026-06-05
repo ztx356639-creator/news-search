@@ -10,5 +10,5 @@ function readNumber(name: string, fallback: number): number {
 export const config = {
   port: readNumber('PORT', 3001),
   cacheTtlSeconds: readNumber('CACHE_TTL', 600),
-  clientOrigin: process.env.CLIENT_ORIGIN ?? '*',
+  clientOrigin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
 } as const
