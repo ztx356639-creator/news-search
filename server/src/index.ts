@@ -141,4 +141,3 @@ app.listen(config.port, '0.0.0.0', () => {
     `API http://localhost:${config.port}  CORS ${config.clientOrigin}  CACHE_TTL ${config.cacheTtlSeconds}s`,
   )
 })
-})
