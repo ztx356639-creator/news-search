@@ -136,7 +136,7 @@ app.get('/api/hot', async (_req, res) => {
   }
 })
 
-app.listen(config.port, '0.0.0.0', () => {
+app.listen(config.port, () => {
   console.log(
     `API http://localhost:${config.port}  CORS ${config.clientOrigin}  CACHE_TTL ${config.cacheTtlSeconds}s`,
   )
