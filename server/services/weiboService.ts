@@ -1,25 +1,23 @@
 import axios from 'axios'
-import NodeCache from 'node-cache'
+import type { HotItem } from '../src/types/hot.js'
 
-interface HotItem {
-  rank: number
-  title: string
-  hot: string | number
-  url: string
+type WeiboRealtimeItem = {
+  word?: unknown
+  num?: unknown
 }
 
-const cache = new NodeCache({
-  stdTTL: 300,
-})
+type WeiboResponse = {
+  data?: {
+    realtime?: unknown
+  }
+}
+
+function isWeiboRealtimeItem(value: unknown): value is WeiboRealtimeItem {
+  return typeof value === 'object' && value !== null
+}
 
 export async function getWeiboHotSearch(): Promise<HotItem[]> {
-  const cached = cache.get<HotItem[]>('weibo-hot')
-
-  if (cached) {
-    return cached
-  }
-
-  const response = await axios.get(
+  const response = await axios.get<WeiboResponse>(
     'https://weibo.com/ajax/side/hotSearch',
     {
       headers: {
@@ -30,19 +28,24 @@ export async function getWeiboHotSearch(): Promise<HotItem[]> {
     },
   )
 
-  const list =
-    response.data?.data?.realtime ?? []
+  const rawList = response.data?.data?.realtime
+  const list = Array.isArray(rawList) ? rawList : []
 
-  const result = list.map(
-    (item: any, index: number) => ({
-      rank: index + 1,
-      title: item.word,
-      hot: item.num || 0,
-      url: `https://s.weibo.com/weibo?q=${encodeURIComponent(item.word)}`,
-    }),
-  )
+  return list.flatMap((value, index) => {
+    if (!isWeiboRealtimeItem(value) || typeof value.word !== 'string') {
+      return []
+    }
 
-  cache.set('weibo-hot', result)
-
-  return result
+    return [
+      {
+        rank: index + 1,
+        title: value.word,
+        hot:
+          typeof value.num === 'number' || typeof value.num === 'string'
+            ? value.num
+            : 0,
+        url: `https://s.weibo.com/weibo?q=${encodeURIComponent(value.word)}`,
+      },
+    ]
+  })
 }
