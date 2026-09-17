@@ -1,25 +1,32 @@
 import axios from 'axios'
-import NodeCache from 'node-cache'
+import type { HotItem } from '../src/types/hot.js'
 
-const cache = new NodeCache({
-  stdTTL: 300,
-})
-
-export interface BilibiliHotItem {
-  rank: number
-  title: string
-  hot: number
-  url: string
+type BilibiliRankingItem = {
+  title?: unknown
+  bvid?: unknown
+  short_link_v2?: unknown
+  short_link?: unknown
+  stat?: {
+    view?: unknown
+  }
 }
 
-export async function getBilibiliHotSearch(): Promise<BilibiliHotItem[]> {
-  const cached = cache.get<BilibiliHotItem[]>('bilibili-hot')
-
-  if (cached) {
-    return cached
+type BilibiliResponse = {
+  data?: {
+    list?: unknown
   }
+}
 
-  const response = await axios.get(
+function isRankingItem(value: unknown): value is BilibiliRankingItem {
+  return typeof value === 'object' && value !== null
+}
+
+function readOptionalString(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined
+}
+
+export async function getBilibiliHotSearch(): Promise<HotItem[]> {
+  const response = await axios.get<BilibiliResponse>(
     'https://api.bilibili.com/x/web-interface/ranking/v2?rid=0&type=all',
     {
       headers: {
@@ -30,21 +37,26 @@ export async function getBilibiliHotSearch(): Promise<BilibiliHotItem[]> {
     },
   )
 
-  const list = response.data?.data?.list ?? []
+  const rawList = response.data?.data?.list
+  const list = Array.isArray(rawList) ? rawList.slice(0, 30) : []
 
-  const result: BilibiliHotItem[] = list
-    .slice(0, 30)
-    .map((item: any, index: number) => ({
-      rank: index + 1,
-      title: item.title,
-      hot: item.stat?.view ?? 0,
-      url:
-        item.short_link_v2 ||
-        item.short_link ||
-        `https://www.bilibili.com/video/${item.bvid}`,
-    }))
+  return list.flatMap((value, index) => {
+    if (!isRankingItem(value) || typeof value.title !== 'string') {
+      return []
+    }
 
-  cache.set('bilibili-hot', result)
+    const shortLink =
+      readOptionalString(value.short_link_v2) ?? readOptionalString(value.short_link)
+    const bvid = readOptionalString(value.bvid)
+    const view = value.stat?.view
 
-  return result
+    return [
+      {
+        rank: index + 1,
+        title: value.title,
+        hot: typeof view === 'number' ? view : 0,
+        url: shortLink ?? (bvid ? `https://www.bilibili.com/video/${bvid}` : 'https://www.bilibili.com'),
+      },
+    ]
+  })
 }
