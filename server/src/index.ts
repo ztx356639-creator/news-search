@@ -2,6 +2,7 @@ import cors from 'cors'
 import express from 'express'
 import { getCached, setCached } from './cache.js'
 import { config } from './config.js'
+import type { HotItem, HotPlatform, HotResponse } from './types/hot.js'
 import { getWeiboHotSearch } from '../services/weiboService.js'
 import { getZhihuHotSearch } from '../services/zhihuService.js'
 import { getBilibiliHotSearch } from '../services/bilibiliService.js'
@@ -9,26 +10,6 @@ import { getBilibiliHotSearch } from '../services/bilibiliService.js'
 const app = express()
 const startedAt = Date.now()
 const HOT_CACHE_KEY = 'api:hot'
-
-type HotItem = {
-  rank: number
-  title: string
-  hot: string | number
-  url: string
-}
-
-type HotPlatform = {
-  id: string
-  name: string
-  items: HotItem[]
-  error?: string
-}
-
-type HotResponse = {
-  success: boolean
-  updatedAt: string
-  platforms: HotPlatform[]
-}
 
 app.use(
   cors({
