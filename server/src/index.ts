@@ -3,9 +3,7 @@ import express from 'express'
 import { getCached, setCached } from './cache.js'
 import { config } from './config.js'
 import type { HotItem, HotPlatform, HotResponse } from './types/hot.js'
-import { getWeiboHotSearch } from '../services/weiboService.js'
-import { getZhihuHotSearch } from '../services/zhihuService.js'
-import { getBilibiliHotSearch } from '../services/bilibiliService.js'
+import { collectors, type Collector, type RawArticle } from './collectors/index.js'
 
 const app = express()
 const startedAt = Date.now()
@@ -25,32 +23,37 @@ app.get('/api/health', (_req, res) => {
   })
 })
 
-async function safeLoadPlatform(
-  id: string,
-  name: string,
-  loader: () => Promise<HotItem[]>,
-): Promise<HotPlatform> {
+function toHotItems(articles: RawArticle[]): HotItem[] {
+  return articles.map((article, index) => ({
+    rank: article.rank ?? index + 1,
+    title: article.title,
+    hot: article.metric ?? 0,
+    url: article.url,
+  }))
+}
+
+async function safeLoadPlatform(collector: Collector): Promise<HotPlatform> {
   try {
-    const items = await loader()
+    const articles = await collector.fetch()
 
     return {
-      id,
-      name,
-      items,
+      id: collector.id,
+      name: collector.name,
+      items: toHotItems(articles),
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
 
     console.error(
       JSON.stringify({
-        platform: id,
+        platform: collector.id,
         error: message,
       }),
     )
 
     return {
-      id,
-      name,
+      id: collector.id,
+      name: collector.name,
       items: [],
       error: message,
     }
@@ -69,11 +72,7 @@ app.get('/api/hot', async (_req, res) => {
       {
         success: true,
         updatedAt: new Date().toISOString(),
-        platforms: await Promise.all([
-          safeLoadPlatform('weibo', '微博', getWeiboHotSearch),
-          safeLoadPlatform('zhihu', '知乎', getZhihuHotSearch),
-          safeLoadPlatform('bilibili', 'B站', getBilibiliHotSearch),
-        ]),
+        platforms: await Promise.all(collectors.map(safeLoadPlatform)),
       }
 
     if (!cached) {
